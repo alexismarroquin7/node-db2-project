@@ -1,7 +1,13 @@
+const Car = require('./cars-model');
 const router = require("express").Router();
 
-router.get('/', (req, res) => {
-  
+router.get('/', async (req, res, next) => {
+  try {
+    const cars = await Car.getAll();
+    res.status(200).json(cars);
+  } catch(err) {
+    next(err)
+  }
 });
 
 router.get('/:id', (req, res) => {
