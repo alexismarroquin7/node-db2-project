@@ -29,7 +29,29 @@ router.post('/', mw.checkCarPayload, mw.checkVinNumberValid, mw.checkVinNumberUn
   }
 });
 
-router.use((err, req, res, next) => {
+router.put('/:id', mw.checkCarId, mw.checkCarPayload, mw.checkVinNumberValid, mw.checkVinNumberUnique, async (req, res, next) => {
+  const { id } = req.params;
+  const car = req.body;
+
+  try {
+    const updatedCar = await Car.updateById(id, car);
+    res.status(200).json(updatedCar);
+  } catch(err) {
+    next(err);
+  }
+});
+
+router.delete('/:id', mw.checkCarId, async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const deletedCar = await Car.deleteById(id);
+    res.status(200).json(deletedCar);
+  } catch(err) {
+    next(err) 
+  }
+});
+
+router.use((err, req, res, next) => { // eslint-disable-line
   res.status(500).json({
     message: err.message,
     stack: err.stack
